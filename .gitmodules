@@ -7,3 +7,6 @@
 [submodule "src/libs/Pixelurite"]
 	path = src/libs/Pixelurite
 	url = https://github.com/Jictyvoo/Pixelurite
+[submodule "src/libs/bitser"]
+	path = src/libs/bitser
+	url = https://github.com/gvx/bitser

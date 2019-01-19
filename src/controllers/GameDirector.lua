@@ -1,3 +1,6 @@
+-- Controllers
+local DataPersistence = require "controllers.DataPersistence"
+
 -- Models
 local World = require "models.business.World"
 
@@ -15,12 +18,14 @@ GameDirector.__index = GameDirector
 function GameDirector:new()
     local world = World:new()
     local this = {
-        bulletsInWorld = {},
         world = world,
         sanghost = Sanghost:new(),
+        levelData = nil,
+        dataPersistence = DataPersistence:new(),
         --Libraries
         libraries = {
-            Sanghost = Sanghost, ButtonManager = ButtonManager, Pixelurite = Pixelurite
+            Sanghost = Sanghost, ButtonManager = ButtonManager, Pixelurite = Pixelurite,
+            DataPersistence = DataPersistence
         }
     }
 
@@ -28,6 +33,7 @@ function GameDirector:new()
 end
 
 function GameDirector:reset()
+    self.levelData = self.dataPersistence:load()
 end
 
 function GameDirector:getLibrary(library)

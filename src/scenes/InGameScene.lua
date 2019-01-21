@@ -9,7 +9,7 @@ function InGameScene:new(world)
         },
         currentGamemode = nil
     }
-    this.currentGamemode = this.gamemodes.DriveTheBus:new(gameDirector:getWorld().world)
+    this.currentGamemode = this.gamemodes.DriveTheBus:getInstance(world)
     sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
     return setmetatable(this, InGameScene)
 end

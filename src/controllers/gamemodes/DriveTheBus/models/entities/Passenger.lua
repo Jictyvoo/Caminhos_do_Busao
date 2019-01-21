@@ -12,10 +12,19 @@ function Passenger:new(world, x, y)
     --aplying physics
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("Passenger")
-    this.fixture:setCategory(2)
-    this.fixture:setMask(2)
+    this.fixture:setCategory(3)
+    this.fixture:setMask(3)
 
     return setmetatable(this, Passenger)
+end
+
+function Passenger:destroy()
+    self.fixture:destroy()
+    self.body:destroy()
+end
+
+function Passenger:getFixture()
+    return self.fixture
 end
 
 function Passenger:update(dt)

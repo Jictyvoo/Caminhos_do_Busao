@@ -15,8 +15,20 @@ function World:new()
     world:setCallbacks(beginContact, endContact)
 
     return setmetatable({
+        callbacks = {},
         world = world
     }, World)
+end
+
+function World:addCallback(identity, callback, type)
+    if not self.callbacks[identity] then self.callbacks[identity] = {beginContact = nil, endContact = nil} end
+    self.callbacks[identity][type] = callback
+end
+
+function World:changeCallbacks(identity)
+    if self.callbacks[identity] then
+        self.world:setCallbacks(self.callbacks[identity].beginContact, self.callbacks[identity].endContact)
+    end
 end
 
 function World:update(dt)

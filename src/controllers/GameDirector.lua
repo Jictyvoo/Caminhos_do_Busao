@@ -1,4 +1,5 @@
 -- Controllers
+local CameraController = require "controllers.CameraController"
 local DataPersistence = require "controllers.DataPersistence"
 
 -- Models
@@ -25,7 +26,7 @@ function GameDirector:new()
         --Libraries
         libraries = {
             Sanghost = Sanghost, ButtonManager = ButtonManager, Pixelurite = Pixelurite,
-            DataPersistence = DataPersistence
+            CameraController = CameraController, DataPersistence = DataPersistence
         }
     }
 

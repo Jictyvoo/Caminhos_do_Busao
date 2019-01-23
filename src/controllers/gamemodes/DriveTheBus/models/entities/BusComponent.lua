@@ -5,12 +5,13 @@ BusComponent.__index = BusComponent
 function BusComponent:new(world, x, y, orientation)
     local this = {
         body = love.physics.newBody(world, x or 0, y or 0, "kinematic"),
-        shape = love.physics.newRectangleShape(50, 20),
+        shape = love.physics.newRectangleShape(20, 20),
         fixture = nil,
         speed = 250,
         orientations = {up = "vertical", down = "vertical", right = "horizontal", left = "horizontal"},
         currentDirection = orientation,
-        nextSegment = nil
+        nextSegment = nil,
+        lifetimeDirections = {},
     }
     
     --aplying physics
@@ -30,11 +31,17 @@ function BusComponent:new(world, x, y, orientation)
     return this
 end
 
-function BusComponent:addSegment(segment)
-    if self.nextSegment then
-        self.nextSegment:addSegment(segment)
+function BusComponent:addSegment(componentConstructor, world)
+    local x = 0; local y = 0
+    if self.orientations[self.currentDirection] == "horizontal" then
+        x = 10 * (self.currentDirection == "left" and -1 or 1)
     else
-        self.nextSegment = segment
+        y = 10 * (self.currentDirection == "up" and -1 or 1)
+    end
+    if self.nextSegment then
+        self.nextSegment:addSegment(componentConstructor, world)
+    else
+        self.nextSegment = componentConstructor:new(world, self.body:getX() - x, self.body:getY() - y, self.currentDirection)
     end
 end
 
@@ -54,6 +61,25 @@ function BusComponent:rotate(previousDirection, newDirection)
     end
 end
 
+function BusComponent:changeDirection(to, untilArrive)
+    if to then
+        untilArrive.to = to
+        table.insert(self.lifetimeDirections, untilArrive)
+    end
+end
+
+function BusComponent:changeOrientationNow()
+    if self.orientations[self.currentDirection] ~= self.orientations[self.lifetimeDirections[1].to] then
+        self:rotate(self.currentDirection, self.lifetimeDirections[1].to)
+    end
+    print("Changed")
+    self.currentDirection = self.lifetimeDirections[1].to
+    if self.nextSegment then
+        self.nextSegment:changeDirection(self.currentDirection, self.lifetimeDirections[1])
+    end
+    table.remove(self.lifetimeDirections)
+end
+
 function BusComponent:update(dt)
     local xVelocity = 0
     local yVelocity = 0
@@ -62,10 +88,26 @@ function BusComponent:update(dt)
     else
         xVelocity = self.speed * (self.currentDirection == "left" and -1 or 1)
     end
-    self.body:setLinearVelocity(xVelocity, yVelocity)
     if self.nextSegment then
         self.nextSegment:update(dt)
     end
+    if self.lifetimeDirections[1] then
+        if self.orientations[self.currentDirection] == "horizontal" then
+            if (self.currentDirection == "right" and self.body:getX() >= self.lifetimeDirections[1].x) or (self.currentDirection == "left" and self.body:getX() <= self.lifetimeDirections[1].x) then
+                self.body:setX(self.lifetimeDirections[1].x)
+                self.body:setY(self.lifetimeDirections[1].y)
+                self:changeOrientationNow()
+            end
+        else
+            print(self.currentDirection, self.body:getY(), self.lifetimeDirections[1].y, self.lifetimeDirections[1].to)
+            if (self.currentDirection == "down" and self.body:getY() >= self.lifetimeDirections[1].y) or (self.currentDirection == "up" and self.body:getY() <= self.lifetimeDirections[1].y) then
+                self.body:setX(self.lifetimeDirections[1].x)
+                self.body:setY(self.lifetimeDirections[1].y)
+                self:changeOrientationNow()
+            end
+        end
+    end
+    self.body:setLinearVelocity(xVelocity, yVelocity)
 end
 
 function BusComponent:draw()

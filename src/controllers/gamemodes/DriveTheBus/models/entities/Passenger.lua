@@ -13,7 +13,7 @@ function Passenger:new(world, x, y)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("Passenger")
     this.fixture:setCategory(3)
-    this.fixture:setMask(3)
+    this.fixture:setMask(2)
 
     return setmetatable(this, Passenger)
 end

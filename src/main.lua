@@ -12,6 +12,7 @@ function love.load()
     sceneDirector = MoonJohn:new(require "scenes.SplashScreen":new())
     --Adding Scenes to SceneDirector
     sceneDirector:addScene("mainMenu", require "scenes.MainMenuScene":new())
+    sceneDirector:addScene("levelSelection", require "scenes.LevelSelectionScene":new())
     sceneDirector:addScene("credits", require "scenes.CreditsScene":new())
     sceneDirector:addScene("inGame", require "scenes.InGameScene":new(gameDirector:getWorld()))
 end

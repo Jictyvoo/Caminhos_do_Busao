@@ -5,7 +5,8 @@ InGameScene.__index = InGameScene
 function InGameScene:new(world)
     local this = {
         gamemodes = {
-            DriveTheBus = require "controllers.gamemodes.DriveTheBus"
+            DriveTheBus = require "controllers.gamemodes.DriveTheBus",
+            HowMuchMoneyBack = require "controllers.gamemodes.HowMuchMoneyBack"
         },
         currentGamemode = nil
     }

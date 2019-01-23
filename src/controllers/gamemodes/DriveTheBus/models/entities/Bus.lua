@@ -12,9 +12,11 @@ function Bus:new(world, x, y)
         orientations = {up = "vertical", down = "vertical", right = "horizontal", left = "horizontal"},
         currentDirection = "right",
         world = world,
-        nextSegment = nil
+        nextSegment = nil,
+        canMove = true,
+        elapsedTime = 0
     }
-    
+
     --aplying physics
     this.body:setFixedRotation(true)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
@@ -28,15 +30,14 @@ end
 function Bus:increaseSize(componentConstructor)
     local x = 0; local y = 0
     if self.orientations[self.currentDirection] == "horizontal" then
-        x = 60 * (self.currentDirection == "left" and -1 or 1)
+        x = 25 * (self.currentDirection == "left" and -1 or 1)
     else
-        y = 50 * (self.currentDirection == "up" and -1 or 1)
+        y = 25 * (self.currentDirection == "up" and -1 or 1)
     end
-    local newComponent = componentConstructor:new(self.world, self.body:getX() - x, self.body:getY() - y, self.currentDirection)
     if self.nextSegment then
-        self.nextSegment:addSegment(newComponent)
+        self.nextSegment:addSegment(componentConstructor, self.world)
     else
-        self.nextSegment = newComponent
+        self.nextSegment = componentConstructor:new(self.world, self.body:getX() - x, self.body:getY() - y, self.currentDirection)
     end
 end
 
@@ -61,10 +62,20 @@ function Bus:getPosition()
 end
 
 function Bus:keypressed(key, scancode, isrepeat)
-    if self.keys[key] then
+    if self.keys[key] and self.canMove then
         if self.orientations[self.currentDirection] ~= self.orientations[self.keys[key]] then
+            self.canMove = false
             self:rotate(self.currentDirection, self.keys[key])
             self.currentDirection = self.keys[key]
+            if self.nextSegment then
+                local x = 0; local y = 0
+                if self.orientations[self.currentDirection] == "horizontal" then
+                    x = 25 * (self.currentDirection == "left" and -1 or 1)
+                else
+                    y = 10 * (self.currentDirection == "up" and -1 or 1)
+                end
+                self.nextSegment:changeDirection(self.currentDirection, {x = self.body:getX() - x, y = self.body:getY() - y})
+            end
         end
     end
 end
@@ -73,6 +84,7 @@ function Bus:keyreleased(key, scancode)
 end
 
 function Bus:update(dt)
+    self.elapsedTime = self.elapsedTime + dt
     local xVelocity = 0
     local yVelocity = 0
     if self.orientations[self.currentDirection] == "vertical" then
@@ -83,6 +95,10 @@ function Bus:update(dt)
     self.body:setLinearVelocity(xVelocity, yVelocity)
     if self.nextSegment then
         self.nextSegment:update(dt)
+    end
+    if self.elapsedTime >= 0.3 then
+        self.canMove = true
+        self.elapsedTime = 0
     end
 end
 

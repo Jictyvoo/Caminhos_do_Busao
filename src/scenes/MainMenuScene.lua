@@ -11,7 +11,7 @@ local addButton = function(this, buttonName, sceneName, buttonDimensions, origin
 
     --buttonName, x, y, width, height, image, originalImage, animation, 70
     local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
-    button.callback = callback or function(this) sceneDirector:switchScene(sceneName); sceneDirector:reset(sceneName) end
+    button.callback = callback or function(self) sceneDirector:switchScene(sceneName); sceneDirector:reset(sceneName); this.music:pause() end
     button:setScale(scales.relative.x, scales.relative.y)
     
     this.buttonNames[scaleButtonName] = button
@@ -21,11 +21,13 @@ function MainMenuScene:new()
     local this = {
         background = love.graphics.newImage("assets/background.png"),
         logo = love.graphics.newImage("assets/background.png"),
+        music = love.audio.newSource("assets/sounds/menu_sound.wav", "static"),
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
         buttonsImage = nil,
         buttonsQuads = nil,
         buttonNames = {}
     }
+    this.music:setLooping(true)
     scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
     scaleDimension:calculeScales("menuLogo", 150, 110, 0, 50)
     scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
@@ -76,6 +78,7 @@ function MainMenuScene:wheelmoved(x, y)
 end
 
 function MainMenuScene:update(dt)
+    self.music:play()
     self.buttonManager:update(dt)
 end
 

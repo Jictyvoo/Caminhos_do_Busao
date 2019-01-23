@@ -23,6 +23,7 @@ function MainMenuScene:new()
         logo = love.graphics.newImage("assets/background.png"),
         music = love.audio.newSource("assets/sounds/menu_sound.wav", "static"),
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
+        driverSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("Driver_Menu", "assets/sprites/Driver/", true, nil, 1, 1, true),
         buttonsImage = nil,
         buttonsQuads = nil,
         buttonNames = {}
@@ -79,6 +80,7 @@ end
 
 function MainMenuScene:update(dt)
     self.music:play()
+    self.driverSprite:update(dt)
     self.buttonManager:update(dt)
 end
 
@@ -89,6 +91,7 @@ function MainMenuScene:draw()
     scales = scaleDimension:getScale("menuLogo")
     love.graphics.draw(self.logo, scales.x, scales.y, 0, scales.relative.x, scales.relative.y)
     self.buttonManager:draw()
+    self.driverSprite:draw(600, 470)
 end
 
 function MainMenuScene:resize(w, h)

@@ -4,21 +4,20 @@ BusComponent.__index = BusComponent
 
 function BusComponent:new(world, x, y, orientation)
     local this = {
-        body = love.physics.newBody(world, x or 0, y or 0, "kinematic"),
+        body = love.physics.newBody(world, x or 0, y or 0, "dynamic"),
         shape = love.physics.newRectangleShape(20, 20),
         fixture = nil,
         speed = 250,
         orientations = {up = "vertical", down = "vertical", right = "horizontal", left = "horizontal"},
         currentDirection = orientation,
-        nextSegment = nil,
-        lifetimeDirections = {},
+        nextSegment = {}
     }
     
     --aplying physics
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("BusComponent")
     this.fixture:setCategory(2)
-    this.fixture:setMask(2, 3)
+    this.fixture:setMask(3)
 
     this = setmetatable(this, BusComponent)
     if orientation ~= "right" then
@@ -38,10 +37,13 @@ function BusComponent:addSegment(componentConstructor, world)
     else
         y = 10 * (self.currentDirection == "up" and -1 or 1)
     end
-    if self.nextSegment then
-        self.nextSegment:addSegment(componentConstructor, world)
+    if self.nextSegment.segment then
+        self.nextSegment.segment:addSegment(componentConstructor, world)
     else
-        self.nextSegment = componentConstructor:new(world, self.body:getX() - x, self.body:getY() - y, self.currentDirection)
+        self.nextSegment.segment = componentConstructor:new(world, self.body:getX() - x, self.body:getY() - y, self.currentDirection)
+        self.nextSegment.joint = love.physics.newRevoluteJoint(self.body, self.nextSegment.segment.body, self.body:getX(), self.body:getY(), true)
+        --[[self.nextSegment.joint:setLimits(0.2, 3.14)
+        self.nextSegment.joint:setLimitsEnabled(true)--]]
     end
 end
 
@@ -61,25 +63,6 @@ function BusComponent:rotate(previousDirection, newDirection)
     end
 end
 
-function BusComponent:changeDirection(to, untilArrive)
-    if to then
-        untilArrive.to = to
-        table.insert(self.lifetimeDirections, untilArrive)
-    end
-end
-
-function BusComponent:changeOrientationNow()
-    if self.orientations[self.currentDirection] ~= self.orientations[self.lifetimeDirections[1].to] then
-        self:rotate(self.currentDirection, self.lifetimeDirections[1].to)
-    end
-    print("Changed")
-    self.currentDirection = self.lifetimeDirections[1].to
-    if self.nextSegment then
-        self.nextSegment:changeDirection(self.currentDirection, self.lifetimeDirections[1])
-    end
-    table.remove(self.lifetimeDirections)
-end
-
 function BusComponent:update(dt)
     local xVelocity = 0
     local yVelocity = 0
@@ -88,32 +71,16 @@ function BusComponent:update(dt)
     else
         xVelocity = self.speed * (self.currentDirection == "left" and -1 or 1)
     end
-    if self.nextSegment then
-        self.nextSegment:update(dt)
-    end
-    if self.lifetimeDirections[1] then
-        if self.orientations[self.currentDirection] == "horizontal" then
-            if (self.currentDirection == "right" and self.body:getX() >= self.lifetimeDirections[1].x) or (self.currentDirection == "left" and self.body:getX() <= self.lifetimeDirections[1].x) then
-                self.body:setX(self.lifetimeDirections[1].x)
-                self.body:setY(self.lifetimeDirections[1].y)
-                self:changeOrientationNow()
-            end
-        else
-            print(self.currentDirection, self.body:getY(), self.lifetimeDirections[1].y, self.lifetimeDirections[1].to)
-            if (self.currentDirection == "down" and self.body:getY() >= self.lifetimeDirections[1].y) or (self.currentDirection == "up" and self.body:getY() <= self.lifetimeDirections[1].y) then
-                self.body:setX(self.lifetimeDirections[1].x)
-                self.body:setY(self.lifetimeDirections[1].y)
-                self:changeOrientationNow()
-            end
-        end
+    if self.nextSegment.segment then
+        self.nextSegment.segment:update(dt)
     end
     self.body:setLinearVelocity(xVelocity, yVelocity)
 end
 
 function BusComponent:draw()
     love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-    if self.nextSegment then
-        self.nextSegment:draw()
+    if self.nextSegment.segment then
+        self.nextSegment.segment:draw()
     end
 end
 

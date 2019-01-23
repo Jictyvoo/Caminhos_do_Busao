@@ -2,57 +2,44 @@ local Bus = {}
 
 Bus.__index = Bus
 
-function Bus:new(world, x, y)
+function Bus:new(world, x, y, componentConstructor)
     local this = {
         body = love.physics.newBody(world, x or 0, y or 0, "dynamic"),
-        shape = love.physics.newRectangleShape(50, 20),
+        shape = love.physics.newRectangleShape(20, 40),
         fixture = nil,
         speed = 250,
         keys = {up = "up", down = "down", right = "right", left = "left"},
         orientations = {up = "vertical", down = "vertical", right = "horizontal", left = "horizontal"},
-        currentDirection = "right",
+        currentDirection = nil,
         world = world,
-        nextSegment = nil,
+        nextSegment = {segment = componentConstructor:new(world, x, y - 20, "down"), joint = nil},
         canMove = true,
         elapsedTime = 0
     }
-
+    this.nextSegment.segment.fixture:setCategory(4)
+    this.nextSegment.joint = love.physics.newRevoluteJoint(this.body, this.nextSegment.segment.body, x, y - 20)
+    this.nextSegment.joint:setLimits(-0.1, 0.1)
+    this.nextSegment.joint:setLimitsEnabled(true)
     --aplying physics
     this.body:setFixedRotation(true)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("Bus")
     this.fixture:setCategory(1)
-    this.fixture:setMask(1)
+    this.fixture:setMask(1, 4)
 
     return setmetatable(this, Bus)
 end
 
 function Bus:increaseSize(componentConstructor)
-    local x = 0; local y = 0
-    if self.orientations[self.currentDirection] == "horizontal" then
-        x = 25 * (self.currentDirection == "left" and -1 or 1)
-    else
-        y = 25 * (self.currentDirection == "up" and -1 or 1)
-    end
-    if self.nextSegment then
-        self.nextSegment:addSegment(componentConstructor, self.world)
-    else
-        self.nextSegment = componentConstructor:new(self.world, self.body:getX() - x, self.body:getY() - y, self.currentDirection)
-    end
+    self.nextSegment.segment:addSegment(componentConstructor, self.world)
 end
 
-function Bus:rotate(previousDirection, newDirection)
-    if self.orientations[previousDirection] == "horizontal" then
-        if newDirection == "up" then
-            self.body:setAngle(math.pi / 2 * (previousDirection == "right" and 1 or -1))
+function Bus:rotate(direction)
+    if direction then
+        if direction == "right" then
+            self.body:setAngle(self.body:getAngle() + (math.pi / 8 * 1))
         else
-            self.body:setAngle(math.pi / 2 * (previousDirection == "right" and -1 or 1))
-        end
-    else
-        if newDirection == "right" then
-            self.body:setAngle(math.pi * (previousDirection == "up" and 1 or -1))
-        else
-            self.body:setAngle(-math.pi * (previousDirection == "up" and 1 or -1))
+            self.body:setAngle(self.body:getAngle() + (math.pi / 8 * -1))
         end
     end
 end
@@ -62,42 +49,30 @@ function Bus:getPosition()
 end
 
 function Bus:keypressed(key, scancode, isrepeat)
-    if self.keys[key] and self.canMove then
-        if self.orientations[self.currentDirection] ~= self.orientations[self.keys[key]] then
-            self.canMove = false
-            self:rotate(self.currentDirection, self.keys[key])
+    if self.keys[key] then
+        if self.orientations[self.keys[key]] == "horizontal" then
             self.currentDirection = self.keys[key]
-            if self.nextSegment then
-                local x = 0; local y = 0
-                if self.orientations[self.currentDirection] == "horizontal" then
-                    x = 25 * (self.currentDirection == "left" and -1 or 1)
-                else
-                    y = 10 * (self.currentDirection == "up" and -1 or 1)
-                end
-                self.nextSegment:changeDirection(self.currentDirection, {x = self.body:getX() - x, y = self.body:getY() - y})
-            end
         end
     end
 end
 
 function Bus:keyreleased(key, scancode)
+    if self.keys[key] == self.currentDirection then
+        self.currentDirection = nil
+    end
 end
 
 function Bus:update(dt)
     self.elapsedTime = self.elapsedTime + dt
-    local xVelocity = 0
-    local yVelocity = 0
-    if self.orientations[self.currentDirection] == "vertical" then
-        yVelocity = self.speed * (self.currentDirection == "up" and -1 or 1)
-    else
-        xVelocity = self.speed * (self.currentDirection == "left" and -1 or 1)
-    end
+    local xVelocity = -self.speed * math.sin(self.body:getAngle())
+    local yVelocity = self.speed * math.cos(self.body:getAngle())
+    
     self.body:setLinearVelocity(xVelocity, yVelocity)
-    if self.nextSegment then
-        self.nextSegment:update(dt)
-    end
-    if self.elapsedTime >= 0.3 then
-        self.canMove = true
+    --[[if self.nextSegment then
+        self.nextSegment.segment:update(dt)
+    end--]]
+    if self.elapsedTime >= 0.05 then
+        self:rotate(self.currentDirection)
         self.elapsedTime = 0
     end
 end
@@ -105,9 +80,14 @@ end
 function Bus:draw()
     love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
     if self.nextSegment then
-        self.nextSegment:draw()
+        self.nextSegment.segment:draw()
     end
     --love.graphics.rectangle("fill", self.body:getX(), self.body:getY(), 50, 20)
+    local x1, y1, x2, y2 = self.nextSegment.joint:getAnchors( )
+    love.graphics.setColor(0.6, 1, 0.33)
+    love.graphics.circle("fill",x1,y1,5)
+    love.graphics.circle("fill",x2,y2,5)
+    love.graphics.setColor(1, 1, 1)
 end
 
 return Bus

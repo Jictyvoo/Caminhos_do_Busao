@@ -21,19 +21,26 @@ end
 function GameController:new(world)
     local this = {
         world = world,
-        busHead = Bus:new(world.world, 50, 60),
+        busHead = Bus:new(world.world, 50, 60, BusComponent),
         cameraController = nil,
         passengers = {},
         mapSize = {w = 2400, h = 1800},
         elapsedTime = 0,
         score = 0,
         growBus = false,
+        walls = {},
         waitTime = love.math.random(1.5, 6)
     }
     this.cameraController = gameDirector:getLibrary("CameraController"):new(this.busHead, this.mapSize)
     world:addCallback("DriveTheBus", beginContact, "beginContact")
     world:changeCallbacks("DriveTheBus")
     
+    --[[Adding walls to game --]]
+    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 1200, 0, {w = 2400, h = 10}))
+    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 1200, 1800, {w = 2400, h = 10}))
+    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 0, 900, {w = 10, h = 1800}))
+    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 2400, 900, {w = 10, h = 1800}))
+
     this = setmetatable(this, GameController)
     for count = 1, 15 do
         this:addPassenger()
@@ -93,6 +100,7 @@ end
 
 function GameController:draw()
     self.cameraController:draw(function()
+        for _, wall in pairs(self.walls) do wall:draw() end
         self.busHead:draw()
         for _, passenger in pairs(self.passengers) do
             passenger:draw()

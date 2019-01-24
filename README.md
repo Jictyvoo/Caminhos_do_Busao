@@ -11,3 +11,5 @@ O jogo consiste em um game com várias mecânicas de gameplay, nas quais o jogad
 * Drive the Bus - Semelhante à snake, tem de dirigir o caminhão e pegando passageiros
 * How Much Money Back - Deve contar quanto dinheiro deve dar de troco ao passageiro em determinado tempo
 * Bus Stop - Deve ser realizado o pedido de parada do ônibus na parada correta à que for apresentada ao jogador
+* Fit Passengers - Deve-se encaixar os passageiros no ônibus
+* Deficient Elevator - Deve mover o elevador rapidamente para cima e para baixo

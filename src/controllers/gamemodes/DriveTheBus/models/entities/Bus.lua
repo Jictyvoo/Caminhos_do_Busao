@@ -3,6 +3,10 @@ local Bus = {}
 Bus.__index = Bus
 
 function Bus:new(world, x, y, componentConstructor)
+    local segmentImages = {
+        love.graphics.newImage("assets/sprites/DriveTheBus/bus_body_1.png"),
+        love.graphics.newImage("assets/sprites/DriveTheBus/bus_body_2.png")
+    }
     local this = {
         body = love.physics.newBody(world, x or 0, y or 0, "dynamic"),
         shape = love.physics.newRectangleShape(20, 40),
@@ -12,7 +16,8 @@ function Bus:new(world, x, y, componentConstructor)
         orientations = {up = "vertical", down = "vertical", right = "horizontal", left = "horizontal"},
         currentDirection = nil,
         world = world,
-        nextSegment = {segment = componentConstructor:new(world, x, y - 20, "down"), joint = nil},
+        nextSegment = {segment = componentConstructor:new(world, x, y - 20, "down", segmentImages), joint = nil},
+        segmentImages = segmentImages,
         canMove = true,
         elapsedTime = 0
     }
@@ -37,9 +42,9 @@ end
 function Bus:rotate(direction)
     if direction then
         if direction == "right" then
-            self.body:setAngle(self.body:getAngle() + (math.pi / 8 * 1))
+            self.body:setAngle(self.body:getAngle() + (math.pi / 10 * 1))
         else
-            self.body:setAngle(self.body:getAngle() + (math.pi / 8 * -1))
+            self.body:setAngle(self.body:getAngle() + (math.pi / 10 * -1))
         end
     end
 end
@@ -71,7 +76,7 @@ function Bus:update(dt)
     --[[if self.nextSegment then
         self.nextSegment.segment:update(dt)
     end--]]
-    if self.elapsedTime >= 0.05 then
+    if self.elapsedTime >= 0.02 then
         self:rotate(self.currentDirection)
         self.elapsedTime = 0
     end
@@ -85,8 +90,8 @@ function Bus:draw()
     --love.graphics.rectangle("fill", self.body:getX(), self.body:getY(), 50, 20)
     local x1, y1, x2, y2 = self.nextSegment.joint:getAnchors( )
     love.graphics.setColor(0.6, 1, 0.33)
-    love.graphics.circle("fill",x1,y1,5)
-    love.graphics.circle("fill",x2,y2,5)
+    love.graphics.circle("fill", x1, y1, 5)
+    love.graphics.circle("fill", x2, y2, 5)
     love.graphics.setColor(1, 1, 1)
 end
 

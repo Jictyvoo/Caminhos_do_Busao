@@ -2,11 +2,13 @@ local BusComponent = {}
 
 BusComponent.__index = BusComponent
 
-function BusComponent:new(world, x, y, orientation)
+function BusComponent:new(world, x, y, orientation, segmentImages)
     local this = {
         body = love.physics.newBody(world, x or 0, y or 0, "dynamic"),
         shape = love.physics.newRectangleShape(20, 20),
         fixture = nil,
+        segmentImages = segmentImages,
+        image = segmentImages[love.math.random(1, 2)],
         speed = 250,
         orientations = {up = "vertical", down = "vertical", right = "horizontal", left = "horizontal"},
         currentDirection = orientation,
@@ -31,18 +33,13 @@ function BusComponent:new(world, x, y, orientation)
 end
 
 function BusComponent:addSegment(componentConstructor, world)
-    local x = 0; local y = 0
-    if self.orientations[self.currentDirection] == "horizontal" then
-        x = 10 * (self.currentDirection == "left" and -1 or 1)
-    else
-        y = 10 * (self.currentDirection == "up" and -1 or 1)
-    end
     if self.nextSegment.segment then
         self.nextSegment.segment:addSegment(componentConstructor, world)
     else
-        self.nextSegment.segment = componentConstructor:new(world, self.body:getX() - x, self.body:getY() - y, self.currentDirection)
+        --[[ can change y position from -10 to -20 --]]
+        self.nextSegment.segment = componentConstructor:new(world, self.body:getX(), self.body:getY() - 10, self.currentDirection, self.segmentImages)
         self.nextSegment.joint = love.physics.newRevoluteJoint(self.body, self.nextSegment.segment.body, self.body:getX(), self.body:getY(), true)
-        --[[self.nextSegment.joint:setLimits(0.2, 3.14)
+        --[[self.nextSegment.joint:setLimits(-2, 2)
         self.nextSegment.joint:setLimitsEnabled(true)--]]
     end
 end
@@ -77,8 +74,17 @@ function BusComponent:update(dt)
     self.body:setLinearVelocity(xVelocity, yVelocity)
 end
 
+function BusComponent:debugDraw()
+    local x1, y1, x2, y2 = self.nextSegment.joint:getAnchors( )
+    love.graphics.setColor(0.6, 1, 0.33)
+    love.graphics.circle("fill", x1, y1, 5)
+    love.graphics.circle("fill", x2, y2, 5)
+    love.graphics.setColor(1, 1, 1)
+end
+
 function BusComponent:draw()
-    love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+    --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+    love.graphics.draw(self.image, self.body:getX(), self.body:getY(), self.body:getAngle(), 0.5, 0.5, self.image:getWidth() / 2, self.image:getHeight() / 2)
     if self.nextSegment.segment then
         self.nextSegment.segment:draw()
     end

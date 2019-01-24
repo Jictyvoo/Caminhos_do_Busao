@@ -5,7 +5,6 @@ MainMenuScene.__index = MainMenuScene
 local addButton = function(this, buttonName, sceneName, buttonDimensions, originalSize, callback)
     local scaleButtonName = "menu" .. buttonName
     scaleDimension:calculeScales(scaleButtonName, unpack(buttonDimensions))
-    scaleDimension:centralize(scaleButtonName, true, false, false)
     scaleDimension:relativeScale(scaleButtonName, originalSize)
     local scales = scaleDimension:getScale(scaleButtonName)
 
@@ -20,19 +19,19 @@ end
 function MainMenuScene:new()
     local this = {
         background = love.graphics.newImage("assets/background.png"),
-        logo = love.graphics.newImage("assets/background.png"),
+        logo = love.graphics.newImage("assets/title.png"),
         music = love.audio.newSource("assets/sounds/menu_sound.wav", "static"),
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
         driverSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("Driver_Menu", "assets/sprites/Driver/", true, nil, 1, 1, true),
+        collectorSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("Collector_Menu", "assets/sprites/Collector/", true, nil, 1, 1, true),
         buttonsImage = nil,
         buttonsQuads = nil,
         buttonNames = {}
     }
     this.music:setLooping(true)
     scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
-    scaleDimension:calculeScales("menuLogo", 150, 110, 0, 50)
+    scaleDimension:calculeScales("menuLogo", 150, 110, 60, 50)
     scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
-    scaleDimension:centralize("menuLogo", true, false, false, false)
 
     local spriteSheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("buttons", "assets/gui/", nil)
     local spriteQuads = spriteSheet:getQuads()
@@ -46,8 +45,8 @@ function MainMenuScene:new()
 
     local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
     local originalSize = {width = width, height = height}
-    addButton(this, 'Start Game', "inGame", {128, 60, 350, 320}, originalSize)
-    addButton(this, 'Credits', "credits", {128, 60, 350, 460}, originalSize)
+    addButton(this, 'Start Game', "inGame", {160, 60, 500, 200}, originalSize)
+    addButton(this, 'Credits', "credits", {160, 60, 500, 280}, originalSize)
 
     return setmetatable(this, MainMenuScene)
 end
@@ -81,6 +80,7 @@ end
 function MainMenuScene:update(dt)
     self.music:play()
     self.driverSprite:update(dt)
+    self.collectorSprite:update(dt)
     self.buttonManager:update(dt)
 end
 
@@ -91,7 +91,8 @@ function MainMenuScene:draw()
     scales = scaleDimension:getScale("menuLogo")
     love.graphics.draw(self.logo, scales.x, scales.y, 0, scales.relative.x, scales.relative.y)
     self.buttonManager:draw()
-    self.driverSprite:draw(600, 470)
+    self.driverSprite:draw(640, 470)
+    self.collectorSprite:draw(500, 470)
 end
 
 function MainMenuScene:resize(w, h)

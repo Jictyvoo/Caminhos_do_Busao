@@ -8,7 +8,7 @@ function Button:new(buttonName, x, y, width, height, image, originalImage, anima
         image = type(image) == "table" and image or {normal = image, pressed = image, hover = image, disabled = image},
         state = "normal", pressed = false, callback = function() return "Clicked" end,
         animation = animation or {normal = nil, pressed = nil, hover = nil}, scaleX = 1, scaleY = 1,
-        originalImage = originalImage
+        originalImage = originalImage, visible = true
     }
 
     return setmetatable(this, Button)
@@ -28,6 +28,10 @@ end
 
 function Button:disableButton()
     self.state = "disabled"
+end
+
+function Button:setVisible(isVisible)
+    self.visible = isVisible
 end
 
 function Button:enableButton()
@@ -94,14 +98,16 @@ function Button:update(dt)
 end
 
 function Button:draw()
-    if self.animation[self.state] then
-        self.animation[self.state].draw(self.x, self.y)
-    elseif self.image[self.state] then
-        if self.originalImage then
-            love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
-            love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 210, "center", 0, 1, 1)
-        else
-            love.graphics.draw(self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
+    if self.visible then
+        if self.animation[self.state] then
+            self.animation[self.state].draw(self.x, self.y)
+        elseif self.image[self.state] then
+            if self.originalImage then
+                love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
+                love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 210, "center", 0, 1, 1)
+            else
+                love.graphics.draw(self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
+            end
         end
     end
 end

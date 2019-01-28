@@ -11,6 +11,7 @@ local function beginContact(a, b, col)
     if a:getUserData() == "Passenger" or b:getUserData() == "Passenger" then
         instance:removePassenger(a:getUserData() == "Passenger" and a or b)
         instance.score = instance.score + 1
+        instance.gamemodeController:changeGamemode()
         instance.growBus = true
     end
 end
@@ -29,6 +30,7 @@ function GameController:new(world)
         score = 0,
         growBus = false,
         walls = {},
+        gamemodeController = nil,
         waitTime = love.math.random(1.5, 6)
     }
     this.cameraController = gameDirector:getLibrary("CameraController"):new(this.busHead, this.mapSize)
@@ -57,6 +59,10 @@ end
 
 function GameController:reset()
     self = self:new(self.world)
+end
+
+function GameController:setGamemodesController(gamemodeController)
+    self.gamemodeController = gamemodeController
 end
 
 function GameController:removePassenger(fixture)

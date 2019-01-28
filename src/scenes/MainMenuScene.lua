@@ -45,7 +45,7 @@ function MainMenuScene:new()
 
     local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
     local originalSize = {width = width, height = height}
-    addButton(this, 'Start Game', "inGame", {160, 60, 500, 200}, originalSize)
+    addButton(this, 'Start Game', "levelSelection", {160, 60, 500, 200}, originalSize)
     addButton(this, 'Credits', "credits", {160, 60, 500, 280}, originalSize)
 
     return setmetatable(this, MainMenuScene)

@@ -17,7 +17,7 @@ function Bus:new(world, x, y, componentConstructor)
         currentDirection = nil,
         world = world,
         nextSegment = {segment = componentConstructor:new(world, x, y - 20, "down", segmentImages), joint = nil},
-        segmentImages = segmentImages,
+        segmentImages = segmentImages, image = love.graphics.newImage("assets/sprites/DriveTheBus/bus_head.png"),
         canMove = true,
         elapsedTime = 0
     }
@@ -83,16 +83,16 @@ function Bus:update(dt)
 end
 
 function Bus:draw()
-    love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+    --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+    love.graphics.draw(self.image, self.body:getX(), self.body:getY(), self.body:getAngle(), 1, 1, 12, 20)
     if self.nextSegment then
         self.nextSegment.segment:draw()
     end
-    --love.graphics.rectangle("fill", self.body:getX(), self.body:getY(), 50, 20)
-    local x1, y1, x2, y2 = self.nextSegment.joint:getAnchors( )
+    --[[local x1, y1, x2, y2 = self.nextSegment.joint:getAnchors( )
     love.graphics.setColor(0.6, 1, 0.33)
     love.graphics.circle("fill", x1, y1, 5)
     love.graphics.circle("fill", x2, y2, 5)
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(1, 1, 1)--]]
 end
 
 return Bus

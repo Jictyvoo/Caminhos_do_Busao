@@ -7,6 +7,7 @@ local World = require "models.business.World"
 local Wall = require "models.business.Wall"
 
 -- Game UI
+local Button = require "util.ui.Button"
 local ButtonManager = require "util.ui.ButtonManager"
 
 -- Libraries
@@ -26,7 +27,7 @@ function GameDirector:new()
         dataPersistence = DataPersistence:new(),
         --Libraries
         libraries = {
-            Sanghost = Sanghost, ButtonManager = ButtonManager, Pixelurite = Pixelurite,
+            Sanghost = Sanghost, ButtonManager = ButtonManager, Button = Button, Pixelurite = Pixelurite,
             CameraController = CameraController, DataPersistence = DataPersistence,
             Wall = Wall
         }

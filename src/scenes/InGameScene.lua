@@ -42,6 +42,24 @@ function InGameScene:keyreleased(key, scancode)
     self.currentGamemode:keyreleased(key, scancode)
 end
 
+function InGameScene:mousemoved(x, y, dx, dy, istouch)
+    if self.currentGamemode.mousemoved then
+        self.currentGamemode:mousemoved(x, y, dx, dy, istouch)
+    end
+end
+
+function InGameScene:mousepressed(x, y, button, istouch)
+    if self.currentGamemode.mousepressed then
+        self.currentGamemode:mousepressed(x, y, button, istouch)
+    end
+end
+
+function InGameScene:mousereleased(x, y, button, istouch)
+    if self.currentGamemode.mousereleased then
+        self.currentGamemode:mousereleased(x, y, button, istouch)
+    end
+end
+
 function InGameScene:reset()
     gameDirector:reset()
     self.currentGamemode:reset()

@@ -20,9 +20,6 @@ function GameController:new(world)
     world:changeCallbacks("BusStop")
     
     this = setmetatable(this, GameController)
-    for count = 1, 15 do
-        this:addPassenger()
-    end
     return this
 end
 
@@ -35,6 +32,10 @@ end
 
 function GameController:reset()
     self = self:new(self.world)
+end
+
+function GameController:setGamemodesController(gamemodeController)
+    self.gamemodeController = gamemodeController
 end
 
 function GameController:keypressed(key, scancode, isrepeat)

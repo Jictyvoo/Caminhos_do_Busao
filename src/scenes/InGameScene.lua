@@ -6,8 +6,17 @@ function InGameScene:new(world)
     local this = {
         DriveTheBus = require "controllers.gamemodes.DriveTheBus",
         gamemodes = {
-            names = {"HowMuchMoneyBack"},
-            HowMuchMoneyBack = require "controllers.gamemodes.HowMuchMoneyBack"
+            names = {
+                --"HowMuchMoneyBack",
+                "DeficientElevator"
+            },
+            instructions = {
+                DriveTheBus = "Você deve dirigir o busão para pegar passeiros",
+                HowMuchMoneyBack = "Opa",
+                DeficientElevator = "Aperte os botões para cima e para baixo o mais rápido que conseguir"
+            },
+            HowMuchMoneyBack = require "controllers.gamemodes.HowMuchMoneyBack",
+            DeficientElevator = require "controllers.gamemodes.DeficientElevator"
         },
         fonts = {
             letterboard = love.graphics.newFont("assets/fonts/advanced_led_board-7.ttf", 36),
@@ -15,25 +24,32 @@ function InGameScene:new(world)
         },
         letterboardImage = love.graphics.newImage("assets/sprites/misc/letterboard.png"),
         world = world,
-        currentGamemode = nil
+        currentGamemode = nil, gamemodeName = "DriveTheBus"
     }
     this.currentGamemode = this.DriveTheBus:getInstance(world)
     this.currentGamemode:setGamemodesController(this)
     sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
+    sceneDirector:addSubscene("gameOver", require "scenes.subscenes.GameOver":new())
     return setmetatable(this, InGameScene)
 end
 
 function InGameScene:changeGamemode()
-    local gamemodeName = self.gamemodes.names[love.math.random(#self.gamemodes.names)]
-    self.currentGamemode = self.gamemodes[gamemodeName]:getInstance(self.world)
-    self.currentGamemode:setGamemodesController(this)
-    sceneDirector:addSubscene("letterboard", require "scenes.subscenes.Letterboard":new(self.letterboardImage, self.fonts, gamemodeName), true)
+    self.gamemodeName = self.gamemodes.names[love.math.random(#self.gamemodes.names)]
+    self.currentGamemode = self.gamemodes[self.gamemodeName]:getInstance(self.world)
+    self.currentGamemode:setGamemodesController(self)
+    sceneDirector:addSubscene("letterboard", require "scenes.subscenes.Letterboard":new(self.letterboardImage, self.fonts, self.gamemodeName), true)
     sceneDirector:switchSubscene("letterboard")
+end
+
+function InGameScene:exitGamemode()
+    self.currentGamemode = self.DriveTheBus:getInstance(self.world)
+    self.gamemodeName = "DriveTheBus"
+    self.world:changeCallbacks("DriveTheBus")
 end
 
 function InGameScene:keypressed(key, scancode, isrepeat)
     if key == "escape" then
-        sceneDirector:switchSubscene("pause")
+        sceneDirector:switchSubscene("pause", self.gamemodes.instructions[self.gamemodeName])
     end
     self.currentGamemode:keypressed(key, scancode, isrepeat)
 end

@@ -30,6 +30,10 @@ function GameDirector:new()
             Sanghost = Sanghost, ButtonManager = ButtonManager, Button = Button, Pixelurite = Pixelurite,
             CameraController = CameraController, DataPersistence = DataPersistence,
             Wall = Wall
+        },
+        fonts = {
+            ledDigits = love.graphics.newFont("assets/fonts/DS-DIGII.ttf", 36),
+            default = love.graphics.getFont()
         }
     }
 
@@ -56,6 +60,10 @@ function GameDirector:getEntityByFixture(fixture)
     if fixture:getUserData() == "Player" then
         return self.characterController
     end
+end
+
+function GameDirector:getFonts()
+    return self.fonts
 end
 
 function GameDirector:getWorld()

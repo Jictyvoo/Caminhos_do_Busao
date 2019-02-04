@@ -8,7 +8,7 @@ function Button:new(buttonName, x, y, width, height, image, originalImage, anima
         image = type(image) == "table" and image or {normal = image, pressed = image, hover = image, disabled = image},
         state = "normal", pressed = false, callback = function() return "Clicked" end,
         animation = animation or {normal = nil, pressed = nil, hover = nil}, scaleX = 1, scaleY = 1,
-        originalImage = originalImage, visible = true
+        originalImage = originalImage, visible = true, rotation = 0, offsetX = 0, offsetY = 0
     }
 
     return setmetatable(this, Button)
@@ -57,6 +57,14 @@ function Button:setDimensions(width, height)
     self.width, self.height = width, height
 end
 
+function Button:setRotation(rotation)
+    self.rotation = rotation
+end
+
+function Button:setOffset(offsetX, offsetY)
+    self.offsetX, self.offsetY = offsetX, offsetY
+end
+
 function Button:getState()
     return self.state
 end
@@ -103,12 +111,12 @@ function Button:draw()
             self.animation[self.state].draw(self.x, self.y)
         elseif self.image[self.state] then
             if self.originalImage then
-                love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
+                love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, self.rotation, self.scaleX, self.scaleY, self.offsetX, self.offsetY)
                 if self.name then
-                    love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 210, "center", 0, 1, 1)
+                    love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 210, "center", self.rotation, 1, 1)
                 end
             else
-                love.graphics.draw(self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
+                love.graphics.draw(self.image[self.state], self.x, self.y, self.rotation, self.scaleX, self.scaleY, self.offsetX, self.offsetY)
             end
         end
     end

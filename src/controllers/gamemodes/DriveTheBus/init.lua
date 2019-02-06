@@ -22,7 +22,7 @@ end
 function GameController:new(world)
     local this = {
         world = world,
-        busHead = Bus:new(world.world, 50, 120, BusComponent),
+        busHead = Bus:new(world.world, 200, 150, BusComponent),
         background = love.graphics.newImage("assets/sprites/DriveTheBus/background.png"),
         cameraController = nil,
         passengers = {},
@@ -30,23 +30,55 @@ function GameController:new(world)
         elapsedTime = 0,
         score = 0,
         growBus = false,
-        walls = {},
+        walls = {}, invisibleWall = {},
         gamemodeController = nil,
         waitTime = love.math.random(1.5, 6)
     }
-    this.cameraController = gameDirector:getLibrary("CameraController"):new(this.busHead, this.mapSize)
+    this.cameraController = gameDirector:getLibrary("CameraController"):new(this.busHead, this.mapSize, 0.33)
     world:addCallback("DriveTheBus", beginContact, "beginContact")
     world:changeCallbacks("DriveTheBus")
     
-    --[[Adding walls to game --]]
-    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 1200, 0, {w = 2400, h = 10}))
-    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 1200, 1800, {w = 2400, h = 10}))
-    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 0, 900, {w = 10, h = 1800}))
-    table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 2400, 900, {w = 10, h = 1800}))
+    local Wall = gameDirector:getLibrary("Wall")
+    --[[ Adding walls to game --]]
+    table.insert(this.walls, Wall:new(world.world, 1200, 0, {w = 2400, h = 10}))
+    table.insert(this.walls, Wall:new(world.world, 1200, 1800, {w = 2400, h = 10}))
+    table.insert(this.walls, Wall:new(world.world, 0, 900, {w = 10, h = 1800}))
+    table.insert(this.walls, Wall:new(world.world, 2400, 900, {w = 10, h = 1800}))
+
+    --[[ Adding invisible wall --]]
+    table.insert(this.invisibleWall, Wall:new(world.world, 80, 600, {w = 10, h = 900}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 200, 600, {w = 10, h = 900}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 110, 80, {w = 10, h = 130}, nil, 0.653599))
+    table.insert(this.invisibleWall, Wall:new(world.world, 720, 40, {w = 1100, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 720, 150, {w = 1000, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1320, 90, {w = 10, h = 150}, nil, -0.553599))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1300, 320, {w = 1300, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1300, 430, {w = 1300, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1650, 180, {w = 600, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1650, 290, {w = 600, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1150, 620, {w = 520, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1150, 730, {w = 480, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 400, 1330, {w = 520, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 450, 1450, {w = 480, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 580, 1480, {w = 740, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 580, 1580, {w = 740, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1730, 1630, {w = 740, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1730, 1730, {w = 740, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1580, 1340, {w = 450, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1580, 1440, {w = 450, h = 10}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 520, 650, {w = 10, h = 440}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 620, 650, {w = 10, h = 440}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 810, 950, {w = 10, h = 440}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 910, 950, {w = 10, h = 440}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 950, 1390, {w = 10, h = 170}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1050, 1390, {w = 10, h = 170}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1240, 1020, {w = 10, h = 280}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1340, 1020, {w = 10, h = 280}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1240, 1540, {w = 10, h = 200}))
+    table.insert(this.invisibleWall, Wall:new(world.world, 1340, 1540, {w = 10, h = 180}))
 
     this = setmetatable(this, GameController)
     for count = 1, 6 do
-        this:addPassenger()
         this:increaseBusSize()
     end
     
@@ -61,7 +93,6 @@ function GameController:getInstance(world)
 end
 
 function GameController:reset()
-    self = self:new(self.world)
 end
 
 function GameController:setGamemodesController(gamemodeController)
@@ -111,6 +142,7 @@ function GameController:draw()
     self.cameraController:draw(function()
         love.graphics.draw(self.background, 0, 0)
         for _, wall in pairs(self.walls) do wall:draw() end
+        for _, wall in pairs(self.invisibleWall) do wall:draw() end
         self.busHead:draw()
         for _, passenger in pairs(self.passengers) do
             passenger:draw()

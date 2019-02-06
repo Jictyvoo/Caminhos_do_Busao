@@ -8,7 +8,7 @@ function InGameScene:new(world)
         gamemodes = {
             names = {
                 "HowMuchMoneyBack",
-                --"DeficientElevator"
+                "DeficientElevator"
             },
             instructions = {
                 DriveTheBus = "Você deve dirigir o busão para pegar passeiros",

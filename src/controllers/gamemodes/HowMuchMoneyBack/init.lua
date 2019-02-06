@@ -31,9 +31,11 @@ updateStates[1] = function(dt)
     if instance.currentState == 0 and instance.hand.y >= 280 then
         instance.waitTime = 1.5
         instance.currentState = 1
+        instance.hand.currentQuad = instance.hand.spritesheet:getQuads()["hand0001"]
         instance.moneyValue = instance.probableValues[love.math.random(#instance.probableValues)]
     elseif instance.currentState == 1 and instance.hand.y <= -60 then
         instance.currentState = 0
+        instance.hand.currentQuad = instance.hand.spritesheet:getQuads()["hand0000"]
         instance.updateFunction = updateStates[2]
     end
 end
@@ -66,7 +68,7 @@ function GameController:new(world)
     
     this = setmetatable(this, GameController)
     this.hand.spritesheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("hands", "assets/sprites/HowMuchMoneyBack/")
-    this.hand.currentQuad = this.hand.spritesheet:getQuads()["hand0001"]
+    this.hand.currentQuad = this.hand.spritesheet:getQuads()["hand0000"]
     local spriteQuads = this.buttonSprite:getQuads()
     local buttonQuads = {
         normal = spriteQuads["normal"], hover = spriteQuads["normal"],
@@ -81,14 +83,14 @@ function GameController:new(world)
         end
     end)
 
-    this:addArrowButton(575, 280, 5, true)
-    this:addArrowButton(575, 490, -5, false)
-    this:addArrowButton(435, 280, 2, true)
-    this:addArrowButton(435, 490, -2, false)
-    this:addArrowButton(275, 280, 0.50, true)
-    this:addArrowButton(275, 490, -0.50, false)
-    this:addArrowButton(125, 280, 0.10, true)
-    this:addArrowButton(125, 490, -0.10, false)
+    this:addArrowButton(575, 300, 5, true)
+    this:addArrowButton(575, 470, -5, false)
+    this:addArrowButton(435, 300, 2, true)
+    this:addArrowButton(435, 470, -2, false)
+    this:addArrowButton(275, 300, 0.50, true)
+    this:addArrowButton(275, 470, -0.50, false)
+    this:addArrowButton(125, 300, 0.10, true)
+    this:addArrowButton(125, 470, -0.10, false)
     return this
 end
 

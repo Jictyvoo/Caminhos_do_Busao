@@ -5,18 +5,22 @@ InGameScene.__index = InGameScene
 function InGameScene:new(world)
     local this = {
         DriveTheBus = require "controllers.gamemodes.DriveTheBus",
+        music = love.audio.newSource("assets/sounds/in_game.wav", "static"),
         gamemodes = {
             names = {
                 "HowMuchMoneyBack",
-                "DeficientElevator"
+                "DeficientElevator",
+                "BusStop"
             },
             instructions = {
                 DriveTheBus = "Você deve dirigir o busão para pegar passeiros",
                 HowMuchMoneyBack = "Você deve contar o valor do troco corretamente para o passageiro",
-                DeficientElevator = "Aperte os botões para cima e para baixo o mais rápido que conseguir"
+                DeficientElevator = "Aperte os botões para cima e para baixo o mais rápido que conseguir",
+                BusStop = "Para cada ponto passado, se corresponder com o selecionado, aperte espaço"
             },
             HowMuchMoneyBack = require "controllers.gamemodes.HowMuchMoneyBack",
-            DeficientElevator = require "controllers.gamemodes.DeficientElevator"
+            DeficientElevator = require "controllers.gamemodes.DeficientElevator",
+            BusStop = require "controllers.gamemodes.BusStop"
         },
         fonts = {
             letterboard = love.graphics.newFont("assets/fonts/advanced_led_board-7.ttf", 36),
@@ -26,6 +30,7 @@ function InGameScene:new(world)
         world = world,
         currentGamemode = nil, gamemodeName = "DriveTheBus"
     }
+    this.music:setLooping(true)
     this.currentGamemode = this.DriveTheBus:getInstance(world)
     this.currentGamemode:setGamemodesController(this)
     sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
@@ -84,6 +89,7 @@ end
 
 function InGameScene:update(dt)
     gameDirector:update(dt)
+    self.music:play()
     self.currentGamemode:update(dt)
 end
 

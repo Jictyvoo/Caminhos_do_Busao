@@ -18,6 +18,7 @@ updateStates[2] = function(dt)
             instance.currentState = 0
             instance.gateAngle = 0
             instance.updateFunction = updateStates[1]
+            instance.button:setState("disabled")
         end
     end
 end
@@ -37,6 +38,7 @@ updateStates[1] = function(dt)
         instance.currentState = 0
         instance.hand.currentQuad = instance.hand.spritesheet:getQuads()["hand0000"]
         instance.updateFunction = updateStates[2]
+        instance.button:setState("normal")
     end
 end
 
@@ -82,6 +84,7 @@ function GameController:new(world)
             sceneDirector:switchSubscene("gameOver")
         end
     end)
+    this.button:setState("disabled")
 
     this:addArrowButton(575, 300, 5, true)
     this:addArrowButton(575, 470, -5, false)

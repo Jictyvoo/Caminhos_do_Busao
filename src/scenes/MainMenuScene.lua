@@ -19,7 +19,6 @@ end
 function MainMenuScene:new()
     local this = {
         background = love.graphics.newImage("assets/background.png"),
-        logo = love.graphics.newImage("assets/title.png"),
         music = love.audio.newSource("assets/sounds/menu_sound.wav", "static"),
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
         driverSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("Driver_Menu", "assets/sprites/Driver/", true, nil, 1, 1, true),
@@ -30,8 +29,6 @@ function MainMenuScene:new()
     }
     this.music:setLooping(true)
     scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
-    scaleDimension:calculeScales("menuLogo", 150, 110, 60, 50)
-    scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
 
     local spriteSheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("buttons", "assets/gui/", nil)
     local spriteQuads = spriteSheet:getQuads()
@@ -88,8 +85,6 @@ function MainMenuScene:draw()
     local width, height = love.graphics.getDimensions()
     local scales = scaleDimension:getScale("menuBackground")
     love.graphics.draw(self.background, 0, 0, 0, scales.scaleX, scales.scaleY)
-    scales = scaleDimension:getScale("menuLogo")
-    love.graphics.draw(self.logo, scales.x, scales.y, 0, scales.relative.x, scales.relative.y)
     self.buttonManager:draw()
     self.driverSprite:draw(640, 470)
     self.collectorSprite:draw(500, 470)

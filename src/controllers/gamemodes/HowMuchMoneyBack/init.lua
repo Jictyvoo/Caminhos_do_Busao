@@ -100,7 +100,8 @@ function GameController:getInstance(world)
 end
 
 function GameController:reset()
-    self.moneyValue = 0; self.totalTime = 0; self.elapsedTime = 0; self.exchangeValue = 0; self.score = 0
+    self.moneyValue = 0; self.totalTime = 0; self.elapsedTime = 0; self.exchangeValue = 0; self.score = 0;
+    self.updateFunction = updateStates[1]; self.gateAngle = 0; self.currentState = 0
 end
 
 function GameController:setGamemodesController(gamemodeController)
@@ -154,7 +155,7 @@ function GameController:update(dt)
         self.waitTime = self.waitTime - dt
     else
         self.totalTime = self.totalTime + dt
-        if self.totalTime > 10 then
+        if self.totalTime > 15 then
             self.gamemodeController:exitGamemode()
             self:reset()
         else

@@ -7,12 +7,12 @@ function InGameScene:new(world)
         DriveTheBus = require "controllers.gamemodes.DriveTheBus",
         gamemodes = {
             names = {
-                --"HowMuchMoneyBack",
-                "DeficientElevator"
+                "HowMuchMoneyBack",
+                --"DeficientElevator"
             },
             instructions = {
                 DriveTheBus = "Você deve dirigir o busão para pegar passeiros",
-                HowMuchMoneyBack = "Opa",
+                HowMuchMoneyBack = "Você deve contar o valor do troco corretamente para o passageiro",
                 DeficientElevator = "Aperte os botões para cima e para baixo o mais rápido que conseguir"
             },
             HowMuchMoneyBack = require "controllers.gamemodes.HowMuchMoneyBack",
@@ -37,6 +37,7 @@ function InGameScene:changeGamemode()
     self.gamemodeName = self.gamemodes.names[love.math.random(#self.gamemodes.names)]
     self.currentGamemode = self.gamemodes[self.gamemodeName]:getInstance(self.world)
     self.currentGamemode:setGamemodesController(self)
+    self.currentGamemode:reset()
     sceneDirector:addSubscene("letterboard", require "scenes.subscenes.Letterboard":new(self.letterboardImage, self.fonts, self.gamemodeName), true)
     sceneDirector:switchSubscene("letterboard")
 end

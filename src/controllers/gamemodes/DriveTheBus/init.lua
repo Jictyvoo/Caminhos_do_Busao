@@ -22,7 +22,8 @@ end
 function GameController:new(world)
     local this = {
         world = world,
-        busHead = Bus:new(world.world, 50, 60, BusComponent),
+        busHead = Bus:new(world.world, 50, 120, BusComponent),
+        background = love.graphics.newImage("assets/sprites/DriveTheBus/background.png"),
         cameraController = nil,
         passengers = {},
         mapSize = {w = 2400, h = 1800},
@@ -44,9 +45,11 @@ function GameController:new(world)
     table.insert(this.walls, gameDirector:getLibrary("Wall"):new(world.world, 2400, 900, {w = 10, h = 1800}))
 
     this = setmetatable(this, GameController)
-    for count = 1, 15 do
+    for count = 1, 6 do
         this:addPassenger()
+        this:increaseBusSize()
     end
+    
     return this
 end
 
@@ -106,6 +109,7 @@ end
 
 function GameController:draw()
     self.cameraController:draw(function()
+        love.graphics.draw(self.background, 0, 0)
         for _, wall in pairs(self.walls) do wall:draw() end
         self.busHead:draw()
         for _, passenger in pairs(self.passengers) do

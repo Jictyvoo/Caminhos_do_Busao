@@ -16,7 +16,7 @@ function GameController:new(world)
         background = love.graphics.newImage("assets/sprites/DeficientElevator/bus_background.png"),
         elevator = love.graphics.newImage("assets/sprites/DeficientElevator/elevator.png"),
         wheelchair = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("wheelchair", "assets/sprites/DeficientElevator/", true, nil, 1, 1, true),
-        elapsedTime = 0, tx = 0, ty = 0,
+        elapsedTime = 0,
         score = 0, currentState = 0,
         driverSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("driver", "assets/sprites/DeficientElevator/", true, nil, 1, 1, true)
     }
@@ -59,12 +59,6 @@ function GameController:keypressed(key, scancode, isrepeat)
 end
 
 function GameController:keyreleased(key, scancode)
-end
-
-function GameController:mousemoved(x, y, dx, dy, istouch)
-    self.tx = x
-    self.ty = y
-    print(x, y)
 end
 
 function GameController:update(dt)

@@ -34,7 +34,7 @@ end
 
 function Passenger:draw()
     --love.graphics.circle("line", self.body:getX(), self.body:getY(), 10)
-    love.graphics.draw(self.sprite, self.body:getX(), self.body:getY(), 0, 1 , 1, 10, 10)
+    love.graphics.draw(self.sprite, self.body:getX(), self.body:getY(), 0, 1 , 1, 20, 20)
 end
 
 return Passenger

@@ -51,7 +51,7 @@ end
 
 function GameController:keypressed(key, scancode, isrepeat)
     if key == "space" then
-        if self.x >= 296 - 10 and self.x <= 296 + 10 then
+        if self.x >= 296 - 30 and self.x <= 296 + 30 then
             if self.currentStop == self.requestedStop then
                 self.requestedStop = love.math.random(1, #self.busStops); self.score = self.score + 1
             else

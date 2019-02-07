@@ -51,14 +51,14 @@ end
 
 function GameController:keypressed(key, scancode, isrepeat)
     if key == "space" then
-        self.tries = self.tries + 1
-        if self.tries > 3 then
-            self:finishGame()
-        elseif self.x >= 296 - 10 and self.x <= 296 + 10 then
+        if self.x >= 296 - 10 and self.x <= 296 + 10 then
             if self.currentStop == self.requestedStop then
                 self.requestedStop = love.math.random(1, #self.busStops); self.score = self.score + 1
             else
-                self:finishGame()
+                self.tries = self.tries + 1
+                if self.tries > 3 then
+                    self:finishGame()
+                end
             end
             self:resetStop()
         end

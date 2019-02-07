@@ -25,7 +25,7 @@ function GameController:new(world)
         busHead = Bus:new(world.world, 200, 150, BusComponent),
         background = love.graphics.newImage("assets/sprites/DriveTheBus/background.png"),
         cameraController = nil,
-        passengers = {},
+        passengers = {}, passengerSprite = love.graphics.newImage("assets/sprites/DriveTheBus/bus_stop.png"),
         mapSize = {w = 2400, h = 1800},
         elapsedTime = 0,
         score = 0,
@@ -107,7 +107,7 @@ function GameController:removePassenger(fixture)
 end
 
 function GameController:addPassenger()
-    local passenger = Passenger:new(self.world.world, love.math.random(self.mapSize.w), love.math.random(self.mapSize.h))
+    local passenger = Passenger:new(self.world.world, love.math.random(self.mapSize.w), love.math.random(self.mapSize.h), self.passengerSprite)
     self.passengers[passenger:getFixture()] = passenger
 end
 

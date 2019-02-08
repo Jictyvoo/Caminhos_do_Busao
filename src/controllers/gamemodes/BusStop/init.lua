@@ -37,7 +37,7 @@ end
 
 function GameController:reset()
     self.x = 900; self.currentStop = 1; self.requestedStop = love.math.random(5)
-    self.elapsedTime = 0; self.tries = 0; self.score = 0
+    self.elapsedTime = 0; self.tries = 0; self.score = 0; self.totalTime = 40
 end
 
 function GameController:setGamemodesController(gamemodeController)
@@ -45,6 +45,7 @@ function GameController:setGamemodesController(gamemodeController)
 end
 
 function GameController:finishGame()
+    self.gamemodeController:increaseScore(self.score)
     self.gamemodeController:exitGamemode()
     self:reset()
 end
@@ -66,12 +67,6 @@ function GameController:keypressed(key, scancode, isrepeat)
 end
 
 function GameController:keyreleased(key, scancode)
-end
-
-function GameController:mousemoved(x, y, dx, dy, istouch)
-    self.tx = x
-    self.ty = y
-    print(x, y)
 end
 
 function GameController:resetStop()
@@ -105,6 +100,7 @@ function GameController:draw()
     love.graphics.setFont(gameDirector:getFonts().default)
     love.graphics.draw(self.busStops[self.requestedStop], -70, 240, -0.65, 0.5, 0.5)
     love.graphics.draw(self.background, 0, 0, 0)
+    gameDirector:getLibrary("LetterboardTimer"):draw(self.totalTime)
 end
 
 return GameController

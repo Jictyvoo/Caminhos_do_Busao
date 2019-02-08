@@ -28,7 +28,8 @@ function InGameScene:new(world)
         },
         letterboardImage = love.graphics.newImage("assets/sprites/misc/letterboard.png"),
         world = world,
-        currentGamemode = nil, gamemodeName = "DriveTheBus"
+        currentGamemode = nil, gamemodeName = "DriveTheBus",
+        totalScore = 0
     }
     this.music:setLooping(true)
     this.currentGamemode = this.DriveTheBus:getInstance(world)
@@ -47,10 +48,18 @@ function InGameScene:changeGamemode()
     sceneDirector:switchSubscene("letterboard")
 end
 
-function InGameScene:exitGamemode()
+function InGameScene:increaseScore(amount)
+    self.totalScore = self.totalScore + amount
+end
+
+function InGameScene:exitGamemode(over)
     self.currentGamemode = self.DriveTheBus:getInstance(self.world)
     self.gamemodeName = "DriveTheBus"
     self.world:changeCallbacks("DriveTheBus")
+    if over then
+        sceneDirector:addSubscene("finalScore", require "scenes.subscenes.FinalScore":new(self.totalScore, self.DriveTheBus:getInstance(self.world).totalTime), true)
+        sceneDirector:switchSubscene("finalScore")
+    end
 end
 
 function InGameScene:keypressed(key, scancode, isrepeat)

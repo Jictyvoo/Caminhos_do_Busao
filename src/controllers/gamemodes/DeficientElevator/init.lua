@@ -16,7 +16,9 @@ function GameController:new(world)
         background = love.graphics.newImage("assets/sprites/DeficientElevator/bus_background.png"),
         elevator = love.graphics.newImage("assets/sprites/DeficientElevator/elevator.png"),
         wheelchair = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("wheelchair", "assets/sprites/DeficientElevator/", true, nil, 1, 1, true),
-        elapsedTime = 0,
+        controlPanel = love.graphics.newImage("assets/sprites/DeficientElevator/control_panel.png"),
+        panelButton = {}, buttonSprite = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("button", "assets/sprites/DeficientElevator/"),
+        elapsedTime = 0, totalTime = 20,
         score = 0, currentState = 0,
         driverSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("driver", "assets/sprites/DeficientElevator/", true, nil, 1, 1, true)
     }
@@ -24,6 +26,20 @@ function GameController:new(world)
     world:changeCallbacks("DeficientElevator")
     
     this = setmetatable(this, GameController)
+    
+    local spriteQuads = this.buttonSprite:getQuads()
+    local buttonQuads = {
+        normal = spriteQuads["normal"], hover = spriteQuads["normal"],
+        pressed = spriteQuads["pressed"], disabled = spriteQuads["pressed"]
+    }
+    local button = gameDirector:getLibrary("Button"):new(nil, 516, 94, 400, 240, buttonQuads, this.buttonSprite:getAtlas())
+    button:setCallback(function(self) this:elevatorMovement("up") end)
+    table.insert(this.panelButton, button)
+    button = gameDirector:getLibrary("Button"):new(nil, 516, 273, 400, 240, buttonQuads, this.buttonSprite:getAtlas())
+    button:setCallback(function(self) this:elevatorMovement("down") end)
+    button:setScale(1, -1)
+    button:setOffset(0, 240)
+    table.insert(this.panelButton, button)
     return this
 end
 
@@ -35,14 +51,14 @@ function GameController:getInstance(world)
 end
 
 function GameController:reset()
-    self.currentState = 0; self.score = 0; self.elevatorPosition = 0; self.elapsedTime = 0
+    self.currentState = 0; self.score = 0; self.elevatorPosition = 0; self.elapsedTime = 0; self.totalTime = 20
 end
 
 function GameController:setGamemodesController(gamemodeController)
     self.gamemodeController = gamemodeController
 end
 
-function GameController:keypressed(key, scancode, isrepeat)
+function GameController:elevatorMovement(key)
     if key == "up" then
         if self.elevatorPosition > -38 then
             self.elevatorPosition = self.elevatorPosition - 4
@@ -58,14 +74,38 @@ function GameController:keypressed(key, scancode, isrepeat)
     end
 end
 
+function GameController:keypressed(key, scancode, isrepeat)
+    self:elevatorMovement(key)
+end
+
 function GameController:keyreleased(key, scancode)
+end
+
+function GameController:mousemoved(x, y, dx, dy, istouch)
+    for _, button in pairs(self.panelButton) do
+        button:mousemoved(x, y, dx, dy, istouch)
+    end
+end
+
+function GameController:mousepressed(x, y, button, istouch)
+    for _, button in pairs(self.panelButton) do
+        button:mousepressed(x, y, button, istouch)
+    end
+end
+
+function GameController:mousereleased(x, y, button, istouch)
+    for _, button in pairs(self.panelButton) do
+        button:mousereleased(x, y, button, istouch)
+    end
 end
 
 function GameController:update(dt)
     self.elapsedTime = self.elapsedTime + dt
+    self.totalTime = self.totalTime - dt
     self.driverSprite:update(dt)
     self.wheelchair:update(dt)
-    if self.elapsedTime >= 10 then
+    if self.totalTime <= 0 then
+        self.gamemodeController:increaseScore(self.score)
         self.gamemodeController:exitGamemode()
         self:reset()
     end
@@ -77,7 +117,10 @@ function GameController:draw()
     if self.currentState == 1 then
         self.wheelchair:draw(158, 430 + self.elevatorPosition)
     end
+    love.graphics.draw(self.controlPanel, 517, 113, 0, 1, 1)
+    for _, button in pairs(self.panelButton) do button:draw() end
     self.driverSprite:draw(45, 467)
+    gameDirector:getLibrary("LetterboardTimer"):draw(self.totalTime)
 end
 
 return GameController

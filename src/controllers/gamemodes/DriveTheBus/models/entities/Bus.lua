@@ -53,6 +53,10 @@ function Bus:getPosition()
     return self.body:getX(), self.body:getY()
 end
 
+function Bus:stop()
+    self.body:setLinearVelocity(0, 0)
+end
+
 function Bus:keypressed(key, scancode, isrepeat)
     if self.keys[key] then
         if self.orientations[self.keys[key]] == "horizontal" then

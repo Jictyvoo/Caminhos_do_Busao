@@ -3,6 +3,7 @@ local CameraController = require "controllers.CameraController"
 local DataPersistence = require "controllers.DataPersistence"
 
 -- Models
+local LetterboardTimer = require "models.LetterboardTimer"
 local World = require "models.business.World"
 local Wall = require "models.business.Wall"
 
@@ -29,11 +30,12 @@ function GameDirector:new()
         libraries = {
             Sanghost = Sanghost, ButtonManager = ButtonManager, Button = Button, Pixelurite = Pixelurite,
             CameraController = CameraController, DataPersistence = DataPersistence,
-            Wall = Wall
+            Wall = Wall, LetterboardTimer = LetterboardTimer
         },
         fonts = {
+            default = love.graphics.getFont(),
             ledDigits = love.graphics.newFont("assets/fonts/DS-DIGII.ttf", 36),
-            default = love.graphics.getFont()
+            letterboard = love.graphics.newFont("assets/fonts/advanced_led_board-7.ttf", 36)
         }
     }
 

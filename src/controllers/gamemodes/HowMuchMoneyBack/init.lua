@@ -45,7 +45,7 @@ end
 function GameController:new(world)
     local this = {
         world = world,
-        gamemodeController = nil, gateAngle = 0, totalTime = 0,
+        gamemodeController = nil, gateAngle = 0, totalTime = 15,
         elapsedTime = 0, waitTime = 0, ticketGate = love.graphics.newImage("assets/sprites/HowMuchMoneyBack/ticket_gate.png"),
         hand = {spritesheet = nil, x = 660, y = -60, currentQuad = nil}, button = nil,
         buttonSprite = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("button", "assets/sprites/HowMuchMoneyBack/"),
@@ -105,7 +105,7 @@ function GameController:getInstance(world)
 end
 
 function GameController:reset()
-    self.moneyValue = 0; self.totalTime = 0; self.elapsedTime = 0; self.exchangeValue = 0; self.score = 0;
+    self.moneyValue = 0; self.totalTime = 15; self.elapsedTime = 0; self.exchangeValue = 0; self.score = 0;
     self.updateFunction = updateStates[1]; self.gateAngle = 0; self.currentState = 0
 end
 
@@ -159,8 +159,9 @@ function GameController:update(dt)
     if self.waitTime > 0 then
         self.waitTime = self.waitTime - dt
     else
-        self.totalTime = self.totalTime + dt
-        if self.totalTime > 15 then
+        self.totalTime = self.totalTime - dt
+        if self.totalTime <= 0 then
+            self.gamemodeController:increaseScore(self.score)
             self.gamemodeController:exitGamemode()
             self:reset()
         else
@@ -192,6 +193,7 @@ function GameController:draw()
     love.graphics.setFont(gameDirector:getFonts().ledDigits)
     love.graphics.print(string.format("Troco Atual: %f", self.exchangeValue), 210, 240, 0)
     love.graphics.setFont(gameDirector:getFonts().default)
+    gameDirector:getLibrary("LetterboardTimer"):draw(self.totalTime)
 end
 
 return GameController

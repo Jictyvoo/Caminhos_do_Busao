@@ -81,7 +81,7 @@ function GameController:new(world)
         if tostring(this.exchangeValue) == tostring(this.moneyValue - 3.8) then
             this.currentState = 2; this.moneyValue = 0; this.exchangeValue = 0; this.score = this.score + 1
         else
-            sceneDirector:switchSubscene("gameOver")
+            self:finishGame()
         end
     end)
     this.button:setState("disabled")
@@ -155,15 +155,19 @@ function GameController:mousereleased(x, y, button, istouch)
     end
 end
 
+function GameController:finishGame() 
+    self.gamemodeController:increaseScore(self.score)
+    self.gamemodeController:exitGamemode()
+    self:reset()
+end
+
 function GameController:update(dt)
     if self.waitTime > 0 then
         self.waitTime = self.waitTime - dt
     else
         self.totalTime = self.totalTime - dt
         if self.totalTime <= 0 then
-            self.gamemodeController:increaseScore(self.score)
-            self.gamemodeController:exitGamemode()
-            self:reset()
+            self:finishGame()
         else
         self.elapsedTime = self.elapsedTime + dt
         self.updateFunction(dt)

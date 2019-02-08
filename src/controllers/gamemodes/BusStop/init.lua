@@ -15,7 +15,7 @@ function GameController:new(world)
         world = world,
         background = love.graphics.newImage("assets/sprites/BusStop/steering_wheel_background.png"),
         busStops = {}, x = 900, currentStop = 1, requestedStop = love.math.random(5),
-        elapsedTime = 0, tries = 0, totalTime = 40,
+        elapsedTime = 0, tries = 0, totalTime = 40, stopSound = love.audio.newSource("assets/sounds/stop_bell.wav", "static"),
         score = 0,
     }
     world:addCallback("BusStop", beginContact, "beginContact")
@@ -55,6 +55,7 @@ function GameController:keypressed(key, scancode, isrepeat)
         if self.x >= 296 - 30 and self.x <= 296 + 30 then
             if self.currentStop == self.requestedStop then
                 self.requestedStop = love.math.random(1, #self.busStops); self.score = self.score + 1
+                self.stopSound:play()
             else
                 self.tries = self.tries + 1
                 if self.tries > 3 then

@@ -1,4 +1,3 @@
-local MoonJohn = require "libs.MoonJohn.MoonJohn"
 local GameDirector = require "controllers.GameDirector"
 local ScaleDimension = require "util.ScaleDimension"
 
@@ -9,7 +8,8 @@ function love.load()
     scaleDimension = ScaleDimension:new()
     scaleDimension:setGameScreenScale(800, 600)
     gameDirector = GameDirector:new()
-    sceneDirector = MoonJohn:new(require "scenes.SplashScreen":new())
+    sceneDirector = gameDirector:getLibrary("MoonJohn").MoonJohn:new(require "scenes.SplashScreen":new())
+    sceneDirector:setDefaultTransition(function() return gameDirector:getLibrary("MoonJohn").Transitions:FadeOut() end)
     --Adding Scenes to SceneDirector
     sceneDirector:addScene("mainMenu", require "scenes.MainMenuScene":new())
     sceneDirector:addScene("levelSelection", require "scenes.LevelSelectionScene":new())

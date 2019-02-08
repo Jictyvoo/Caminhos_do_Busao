@@ -39,7 +39,7 @@ function InGameScene:new(world)
     return setmetatable(this, InGameScene)
 end
 
-function InGameScene:changeGamemode()
+function InGameScene:randomizeGamemode()
     self.gamemodeName = self.gamemodes.names[love.math.random(#self.gamemodes.names)]
     self.currentGamemode = self.gamemodes[self.gamemodeName]:getInstance(self.world)
     self.currentGamemode:setGamemodesController(self)
@@ -48,17 +48,28 @@ function InGameScene:changeGamemode()
     sceneDirector:switchSubscene("letterboard")
 end
 
+function InGameScene:changeGamemode()
+    local update, draw = gameDirector:getLibrary("MoonJohn").Transitions:FadeOut()
+    sceneDirector:setTransition(update, draw, function() self:randomizeGamemode() end)
+end
+
 function InGameScene:increaseScore(amount)
     self.totalScore = self.totalScore + amount
 end
 
-function InGameScene:exitGamemode(over)
+function InGameScene:GoToMainGamemode()
     self.currentGamemode = self.DriveTheBus:getInstance(self.world)
     self.gamemodeName = "DriveTheBus"
     self.world:changeCallbacks("DriveTheBus")
+end
+
+function InGameScene:exitGamemode(over)
     if over then
         sceneDirector:addSubscene("finalScore", require "scenes.subscenes.FinalScore":new(self.totalScore, self.DriveTheBus:getInstance(self.world).totalTime), true)
         sceneDirector:switchSubscene("finalScore")
+    else
+        local update, draw = gameDirector:getLibrary("MoonJohn").Transitions:FadeOut()
+        sceneDirector:setTransition(update, draw, function() self:GoToMainGamemode() end)
     end
 end
 

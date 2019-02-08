@@ -14,6 +14,7 @@ local ButtonManager = require "util.ui.ButtonManager"
 -- Libraries
 local Sanghost = require "libs.Sanghost.Sanghost"
 local Pixelurite = require "libs.Pixelurite"
+local MoonJohn = require "libs.MoonJohn"
 
 local GameDirector = {}
 
@@ -30,7 +31,7 @@ function GameDirector:new()
         libraries = {
             Sanghost = Sanghost, ButtonManager = ButtonManager, Button = Button, Pixelurite = Pixelurite,
             CameraController = CameraController, DataPersistence = DataPersistence,
-            Wall = Wall, LetterboardTimer = LetterboardTimer
+            Wall = Wall, LetterboardTimer = LetterboardTimer, MoonJohn = MoonJohn
         },
         fonts = {
             default = love.graphics.getFont(),

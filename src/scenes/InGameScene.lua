@@ -12,6 +12,12 @@ function InGameScene:new(world)
                 "DeficientElevator",
                 "BusStop"
             },
+            translatedNames = {
+                DriveTheBus = "Dirigindo o Onibus",
+                HowMuchMoneyBack = "Me da o troco cobrador!",
+                DeficientElevator = "Elevador de Deficientes",
+                BusStop = "Parada de Onibus"
+            },
             instructions = {
                 DriveTheBus = "Você deve dirigir o busão para pegar passeiros",
                 HowMuchMoneyBack = "Você deve contar o valor do troco corretamente para o passageiro",
@@ -44,7 +50,7 @@ function InGameScene:randomizeGamemode()
     self.currentGamemode = self.gamemodes[self.gamemodeName]:getInstance(self.world)
     self.currentGamemode:setGamemodesController(self)
     self.currentGamemode:reset()
-    sceneDirector:addSubscene("letterboard", require "scenes.subscenes.Letterboard":new(self.letterboardImage, self.fonts, self.gamemodeName), true)
+    sceneDirector:addSubscene("letterboard", require "scenes.subscenes.Letterboard":new(self.letterboardImage, self.fonts, self.gamemodes.translatedNames[self.gamemodeName]), true)
     sceneDirector:switchSubscene("letterboard")
 end
 

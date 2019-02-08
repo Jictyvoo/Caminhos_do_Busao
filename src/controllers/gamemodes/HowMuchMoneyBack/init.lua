@@ -30,7 +30,7 @@ updateStates[1] = function(dt)
         instance.elapsedTime = 0
     end
     if instance.currentState == 0 and instance.hand.y >= 280 then
-        instance.waitTime = 1.5
+        instance.waitTime = 0.8
         instance.currentState = 1
         instance.hand.currentQuad = instance.hand.spritesheet:getQuads()["hand0001"]
         instance.moneyValue = instance.probableValues[love.math.random(#instance.probableValues)]
@@ -45,7 +45,7 @@ end
 function GameController:new(world)
     local this = {
         world = world,
-        gamemodeController = nil, gateAngle = 0, totalTime = 15,
+        gamemodeController = nil, gateAngle = 0, totalTime = 20,
         elapsedTime = 0, waitTime = 0, ticketGate = love.graphics.newImage("assets/sprites/HowMuchMoneyBack/ticket_gate.png"),
         hand = {spritesheet = nil, x = 660, y = -60, currentQuad = nil}, button = nil,
         buttonSprite = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("button", "assets/sprites/HowMuchMoneyBack/"),
@@ -81,7 +81,7 @@ function GameController:new(world)
         if tostring(this.exchangeValue) == tostring(this.moneyValue - 3.8) then
             this.currentState = 2; this.moneyValue = 0; this.exchangeValue = 0; this.score = this.score + 1
         else
-            self:finishGame()
+            this:finishGame()
         end
     end)
     this.button:setState("disabled")
@@ -105,7 +105,7 @@ function GameController:getInstance(world)
 end
 
 function GameController:reset()
-    self.moneyValue = 0; self.totalTime = 15; self.elapsedTime = 0; self.exchangeValue = 0; self.score = 0;
+    self.moneyValue = 0; self.totalTime = 20; self.elapsedTime = 0; self.exchangeValue = 0; self.score = 0;
     self.updateFunction = updateStates[1]; self.gateAngle = 0; self.currentState = 0
 end
 

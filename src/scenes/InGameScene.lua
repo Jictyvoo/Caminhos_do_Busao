@@ -8,13 +8,13 @@ function InGameScene:new(world)
         music = love.audio.newSource("assets/sounds/in_game.wav", "static"),
         gamemodes = {
             names = {
-                "HowMuchMoneyBack",
+                --"HowMuchMoneyBack",
                 "DeficientElevator",
-                "BusStop"
+                --"BusStop"
             },
             translatedNames = {
                 DriveTheBus = "Dirigindo o Onibus",
-                HowMuchMoneyBack = "Me da o troco cobrador!",
+                HowMuchMoneyBack = "Contando troco do cobrador!",
                 DeficientElevator = "Elevador de Deficientes",
                 BusStop = "Parada de Onibus"
             },

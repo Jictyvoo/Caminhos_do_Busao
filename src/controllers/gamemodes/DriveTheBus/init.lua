@@ -90,6 +90,14 @@ function GameController:increaseBusSize()
     self.busHead:increaseSize(BusComponent)
 end
 
+function GameController:mousepressed(x, y, button)
+    self.busHead:mousepressed(x, y, button)
+end
+
+function GameController:mousereleased(x, y, button)
+    self.busHead:mousereleased(x, y, button)
+end
+
 function GameController:keypressed(key, scancode, isrepeat)
     self.busHead:keypressed(key, scancode, isrepeat)
 end

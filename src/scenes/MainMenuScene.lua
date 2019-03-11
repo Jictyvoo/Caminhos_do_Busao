@@ -23,13 +23,13 @@ function MainMenuScene:new()
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
         driverSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("Driver_Menu", "assets/sprites/Driver/", true, nil, 1, 1, true),
         collectorSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("Collector_Menu", "assets/sprites/Collector/", true, nil, 1, 1, true),
-        buttonsImage = nil,
-        buttonsQuads = nil,
+        buttonsImage = nil, buttonsQuads = nil,
         buttonNames = {}
     }
     this.music:setLooping(true)
     scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
-
+    scaleDimension:calculeScales("driverSprite", 120, 140, 640, 470)
+    scaleDimension:calculeScales("collectorSprite", 120, 140, 500, 470)
     local spriteSheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("buttons", "assets/gui/", nil)
     local spriteQuads = spriteSheet:getQuads()
     this.buttonsQuads = {
@@ -86,8 +86,10 @@ function MainMenuScene:draw()
     local scales = scaleDimension:getScale("menuBackground")
     love.graphics.draw(self.background, 0, 0, 0, scales.scaleX, scales.scaleY)
     self.buttonManager:draw()
-    self.driverSprite:draw(640, 470)
-    self.collectorSprite:draw(500, 470)
+    scales = scaleDimension:getScale("driverSprite")
+    self.driverSprite:draw(scales.x, scales.y, scales.scaleX, scales.scaleY)
+    scales = scaleDimension:getScale("collectorSprite")
+    self.collectorSprite:draw(scales.x, scales.y, scales.scaleX, scales.scaleY)
 end
 
 function MainMenuScene:resize(w, h)

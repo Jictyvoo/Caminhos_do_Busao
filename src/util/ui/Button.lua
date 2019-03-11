@@ -15,7 +15,7 @@ function Button:new(buttonName, x, y, width, height, image, originalImage, anima
 end
 
 function Button:isMouseOnButton(x, y)
-    return (x >= self.x and x <= self.x + self.width) and (y >= self.y and y <= self.y + self.height)
+    return (x >= self.x - self.offsetX and x <= self.x + self.width - self.offsetX) and (y >= self.y - self.offsetY and y <= self.y + self.height - self.offsetY)
 end
 
 function Button:setCallback(callback)
@@ -111,6 +111,7 @@ function Button:draw()
             self.animation[self.state].draw(self.x, self.y)
         elseif self.image[self.state] then
             if self.originalImage then
+                --love.graphics.rectangle("line", self.x - self.offsetX, self.y - self.offsetY, self.width, self.height)
                 love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, self.rotation, self.scaleX, self.scaleY, self.offsetX, self.offsetY)
                 if self.name then
                     love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 210, "center", self.rotation, 1, 1)

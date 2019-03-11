@@ -57,6 +57,18 @@ function Bus:stop()
     self.body:setLinearVelocity(0, 0)
 end
 
+function Bus:mousepressed(x, y, button)
+    if x <= love.graphics.getWidth() / 2 then
+        self.currentDirection = self.keys["left"]
+    else
+        self.currentDirection = self.keys["right"]
+    end
+end
+
+function Bus:mousereleased(x, y, button)
+    self.currentDirection = nil
+end
+
 function Bus:keypressed(key, scancode, isrepeat)
     if self.keys[key] then
         if self.orientations[self.keys[key]] == "horizontal" then

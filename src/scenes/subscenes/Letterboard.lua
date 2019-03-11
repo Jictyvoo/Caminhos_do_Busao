@@ -40,7 +40,8 @@ function Letterboard:draw()
     love.graphics.setFont(self.fonts.letterboard)
     local scales = scaleDimension:getScale("letterboardImage")
     love.graphics.draw(self.image, scales.x, self.y, 0)
-    love.graphics.print(self.text, (love.graphics.getWidth() / 2) - 160, self.y + 20, 0)
+    love.graphics.printf(self.text, scales.x, self.y + 10, self.image:getWidth() - 20, "center")
+    --love.graphics.print(self.text, (love.graphics.getWidth() / 2) - 160, self.y + 20, 0)
     love.graphics.setFont(self.fonts.default)
 end
 

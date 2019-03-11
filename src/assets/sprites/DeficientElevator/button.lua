@@ -1,55 +1,54 @@
 return {
 	frames = {
 		pressed = {
-			frame = {
-				h = 400,
-				w = 240,
-				x = 243,
-				y = 1,
-			},
-			sourceSize = {
-				h = 400,
-				w = 240,
-			},
 			spriteSourceSize = {
-				h = 400,
-				w = 240,
-				x = 0,
+				w = 120,
+				h = 120,
 				y = 0,
+				x = 0,
 			},
-			trimmed = false,
 			rotated = false,
+			trimmed = false,
+			sourceSize = {
+				w = 120,
+				h = 120,
+			},
+			frame = {
+				w = 120,
+				h = 120,
+				y = 120,
+				x = 0,
+			},
 		},
 		normal = {
-			frame = {
-				h = 400,
-				w = 240,
-				x = 1,
-				y = 1,
-			},
-			sourceSize = {
-				h = 400,
-				w = 240,
-			},
 			spriteSourceSize = {
-				h = 400,
-				w = 240,
-				x = 0,
+				w = 120,
+				h = 120,
 				y = 0,
+				x = 0,
 			},
-			trimmed = false,
 			rotated = false,
+			trimmed = false,
+			sourceSize = {
+				w = 120,
+				h = 120,
+			},
+			frame = {
+				w = 120,
+				h = 120,
+				y = 0,
+				x = 0,
+			},
 		},
 	},
 	meta = {
-		format = "RGBA8888",
-		size = {
-			h = 402,
-			w = 484,
-		},
-		scale = "1",
-		app = "http://www.codeandweb.com/texturepacker",
-		image = "button.png",
 		version = "1.0",
+		size = {
+			w = 120,
+			h = 240,
+		},
+		format = "RGBA8888",
+		app = "https://github.com/piskelapp/piskel/",
+		image = "button.png",
 	},
 }

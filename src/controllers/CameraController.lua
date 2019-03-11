@@ -4,7 +4,7 @@ CameraController.__index = CameraController
 function CameraController:new(player, mapSize, scale)
     local this = {
         player = player,
-        gamera = require "libs.gamera".new(0, 0, mapSize.w, mapSize.h)
+        gamera = require "libs.gamera".new(mapSize.offsetX or 0, mapSize.offsetY or 0, mapSize.w, mapSize.h)
     }
     this.gamera:setScale(scale or 1)
     this.gamera:setPosition(0, 570)

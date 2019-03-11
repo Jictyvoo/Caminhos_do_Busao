@@ -19,7 +19,7 @@ function GameController:new(world)
         controlPanel = love.graphics.newImage("assets/sprites/DeficientElevator/control_panel.png"),
         panelButton = {}, buttonSprite = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("button", "assets/sprites/DeficientElevator/"),
         elapsedTime = 0, totalTime = 20,
-        score = 0, currentState = 0,
+        score = 0, currentState = 0, movingWheelchair = {x = 458},
         driverSprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("driver", "assets/sprites/DeficientElevator/", true, nil, 1, 1, true)
     }
     world:addCallback("DeficientElevator", beginContact, "beginContact")
@@ -32,13 +32,13 @@ function GameController:new(world)
         normal = spriteQuads["normal"], hover = spriteQuads["normal"],
         pressed = spriteQuads["pressed"], disabled = spriteQuads["pressed"]
     }
-    local button = gameDirector:getLibrary("Button"):new(nil, 516, 94, 400, 240, buttonQuads, this.buttonSprite:getAtlas())
+    local button = gameDirector:getLibrary("Button"):new(nil, 580, 180, 120, 120, buttonQuads, this.buttonSprite:getAtlas())
     button:setCallback(function(self) this:elevatorMovement("up") end)
     table.insert(this.panelButton, button)
-    button = gameDirector:getLibrary("Button"):new(nil, 516, 273, 400, 240, buttonQuads, this.buttonSprite:getAtlas())
+    button = gameDirector:getLibrary("Button"):new(nil, 580, 420, 120, 120, buttonQuads, this.buttonSprite:getAtlas())
     button:setCallback(function(self) this:elevatorMovement("down") end)
     button:setScale(1, -1)
-    button:setOffset(0, 240)
+    button:setOffset(0, 60)
     table.insert(this.panelButton, button)
     return this
 end
@@ -52,6 +52,7 @@ end
 
 function GameController:reset()
     self.currentState = 0; self.score = 0; self.elevatorPosition = 0; self.elapsedTime = 0; self.totalTime = 20
+    self.movingWheelchair.x = 458
 end
 
 function GameController:setGamemodesController(gamemodeController)
@@ -63,7 +64,7 @@ function GameController:elevatorMovement(key)
         if self.elevatorPosition > -38 then
             self.elevatorPosition = self.elevatorPosition - 4
         elseif self.elevatorPosition <= -38 and self.currentState == 1 then
-            self.currentState = 0; self.score = self.score + 1
+            self.currentState = 0; self.score = self.score + 1; self.movingWheelchair.x = 458
         end
     elseif key == "down" then
         if self.elevatorPosition < 40 then
@@ -104,6 +105,12 @@ function GameController:update(dt)
     self.totalTime = self.totalTime - dt
     self.driverSprite:update(dt)
     self.wheelchair:update(dt)
+    if self.elapsedTime >= 0.02 then
+        if self.currentState == 0 and self.movingWheelchair.x > 154 then
+            self.movingWheelchair.x = self.movingWheelchair.x - 5
+        end
+        self.elapsedTime = 0
+    end
     if self.totalTime <= 0 then
         self.gamemodeController:increaseScore(self.score)
         self.gamemodeController:exitGamemode()
@@ -116,6 +123,8 @@ function GameController:draw()
     love.graphics.draw(self.elevator, 106, 392 + self.elevatorPosition, 0, 1, 1)
     if self.currentState == 1 then
         self.wheelchair:draw(158, 430 + self.elevatorPosition)
+    else
+        self.wheelchair:draw(self.movingWheelchair.x, 470, -1)
     end
     love.graphics.draw(self.controlPanel, 517, 113, 0, 1, 1)
     for _, button in pairs(self.panelButton) do button:draw() end

@@ -13,3 +13,11 @@ O jogo consiste em um game com várias mecânicas de gameplay, nas quais o jogad
 * Bus Stop - Deve ser realizado o pedido de parada do ônibus na parada correta à que for apresentada ao jogador
 * Fit Passengers - Deve-se encaixar os passageiros no ônibus
 * Deficient Elevator - Deve mover o elevador rapidamente para cima e para baixo
+
+## Metas Futuras
+
+* Fazer classe de RNG bom
+* Fazer a implementação dos modos de jogo para cada nível
+* Implementar o salvamento do nível
+* Implementar o carremento do salve e desbloqueio de novos níveis
+* Implementar O Score bonito com a prancheta por trás
